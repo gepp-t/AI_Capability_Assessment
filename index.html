@@ -1,0 +1,1221 @@
+<!DOCTYPE html>
+<html lang="de">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Adoption Readiness Canvas – Assessment Tool</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link
+    href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Playfair+Display:wght@700;800&display=swap"
+    rel="stylesheet">
+  <style>
+    :root {
+      --bg: #f6f7f9;
+      --surface: #fff;
+      --border: #e3e5ea;
+      --text: #1a1d23;
+      --text-secondary: #6b7080;
+      --text-muted: #9ca3b4;
+      --accent: #4f46e5;
+      --accent-light: #eef2ff;
+      --radius: 12px;
+      --shadow-sm: 0 1px 3px rgba(0, 0, 0, .05);
+      --shadow-md: 0 4px 16px rgba(0, 0, 0, .07)
+    }
+
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0
+    }
+
+    body {
+      font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased
+    }
+
+    ::-webkit-scrollbar {
+      width: 6px
+    }
+
+    ::-webkit-scrollbar-track {
+      background: transparent
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: #cbd5e1;
+      border-radius: 3px
+    }
+
+    .header {
+      background: linear-gradient(135deg, #0f172a, #1e293b 60%, #334155);
+      padding: 32px 24px 28px;
+      color: #fff;
+      position: relative;
+      overflow: hidden
+    }
+
+    .header::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      right: -10%;
+      width: 400px;
+      height: 400px;
+      background: radial-gradient(circle, rgba(99, 102, 241, .15), transparent 70%);
+      pointer-events: none
+    }
+
+    .header-inner {
+      max-width: 900px;
+      margin: 0 auto;
+      position: relative;
+      z-index: 1
+    }
+
+    .header-tag {
+      font-size: 10px;
+      font-weight: 700;
+      color: #818cf8;
+      text-transform: uppercase;
+      letter-spacing: .2em;
+      margin-bottom: 6px
+    }
+
+    .header h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: 28px;
+      font-weight: 800;
+      margin-bottom: 6px;
+      background: linear-gradient(135deg, #fff, #c7d2fe);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent
+    }
+
+    .header p {
+      font-size: 13px;
+      color: #94a3b8;
+      max-width: 560px
+    }
+
+    .meta-section {
+      max-width: 900px;
+      margin: -20px auto 0;
+      padding: 0 16px;
+      position: relative;
+      z-index: 2
+    }
+
+    .meta-card {
+      background: var(--surface);
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      padding: 20px 24px;
+      box-shadow: var(--shadow-md);
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 14px
+    }
+
+    .meta-field label {
+      display: block;
+      font-size: 10px;
+      font-weight: 700;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      margin-bottom: 4px
+    }
+
+    .meta-field input,
+    .meta-field select {
+      width: 100%;
+      padding: 8px 12px;
+      border: 1.5px solid var(--border);
+      border-radius: 8px;
+      font-family: inherit;
+      font-size: 13px;
+      color: var(--text);
+      background: #f8f9fb;
+      transition: border-color .2s
+    }
+
+    .meta-field input:focus,
+    .meta-field select:focus {
+      outline: none;
+      border-color: var(--accent);
+      background: #fff
+    }
+
+    .progress-bar-wrap {
+      max-width: 900px;
+      margin: 16px auto 0;
+      padding: 0 16px
+    }
+
+    .progress-container {
+      background: var(--surface);
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      padding: 14px 20px;
+      box-shadow: var(--shadow-sm)
+    }
+
+    .progress-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px
+    }
+
+    .progress-label {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-secondary)
+    }
+
+    .progress-pct {
+      font-size: 20px;
+      font-weight: 800;
+      color: var(--accent)
+    }
+
+    .progress-track {
+      height: 6px;
+      background: #f1f5f9;
+      border-radius: 3px;
+      overflow: hidden
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--accent), #818cf8);
+      border-radius: 3px;
+      transition: width .5s cubic-bezier(.4, 0, .2, 1)
+    }
+
+    .nav-tabs {
+      max-width: 900px;
+      margin: 16px auto 0;
+      padding: 0 16px;
+      display: flex;
+      gap: 4px;
+      flex-wrap: wrap
+    }
+
+    .nav-tab {
+      padding: 7px 14px;
+      border-radius: 8px;
+      border: 1.5px solid var(--border);
+      background: var(--surface);
+      cursor: pointer;
+      font-family: inherit;
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      transition: all .2s;
+      display: flex;
+      align-items: center;
+      gap: 6px
+    }
+
+    .nav-tab:hover {
+      border-color: #c7d2fe;
+      background: #f8f9ff
+    }
+
+    .nav-tab.active {
+      border-color: var(--accent);
+      background: var(--accent-light);
+      color: var(--accent)
+    }
+
+    .nav-tab .tab-badge {
+      font-size: 9px;
+      padding: 1px 6px;
+      border-radius: 10px;
+      font-weight: 700
+    }
+
+    .nav-tab .tab-score {
+      font-size: 10px;
+      padding: 2px 6px;
+      border-radius: 10px;
+      font-weight: 700;
+      background: #f1f5f9;
+      color: var(--text-muted)
+    }
+
+    .nav-tab.active .tab-score {
+      background: var(--accent);
+      color: #fff
+    }
+
+    .section-wrap {
+      max-width: 900px;
+      margin: 16px auto 0;
+      padding: 0 16px 40px
+    }
+
+    .section-card {
+      background: var(--surface);
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow-sm);
+      overflow: hidden;
+      animation: slideUp .35s ease
+    }
+
+    @keyframes slideUp {
+      from {
+        opacity: 0;
+        transform: translateY(12px)
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0)
+      }
+    }
+
+    .section-header {
+      padding: 20px 24px 16px;
+      border-bottom: 1px solid var(--border)
+    }
+
+    .section-id {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      color: #fff;
+      font-size: 13px;
+      font-weight: 800;
+      margin-right: 10px;
+      vertical-align: middle
+    }
+
+    .section-title {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--text);
+      display: inline;
+      vertical-align: middle
+    }
+
+    .section-subtitle {
+      font-size: 12px;
+      color: var(--text-secondary);
+      margin-top: 2px;
+      margin-left: 42px
+    }
+
+    .section-why {
+      margin: 12px 0 0 42px;
+      padding: 10px 14px;
+      border-radius: 8px;
+      font-size: 12px;
+      font-style: italic;
+      line-height: 1.5
+    }
+
+    .question-group {
+      padding: 16px 24px;
+      border-bottom: 1px solid #f1f5f9
+    }
+
+    .question-group:last-child {
+      border-bottom: none
+    }
+
+    .question-text {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: 10px;
+      line-height: 1.5
+    }
+
+    .question-id {
+      font-size: 10px;
+      font-weight: 700;
+      padding: 2px 7px;
+      border-radius: 6px;
+      margin-right: 6px;
+      color: #fff;
+      vertical-align: middle
+    }
+
+    .likert-row {
+      display: flex;
+      gap: 4px;
+      flex-wrap: wrap
+    }
+
+    .likert-btn {
+      flex: 1;
+      min-width: 0;
+      padding: 9px 4px;
+      border-radius: 8px;
+      border: 1.5px solid var(--border);
+      background: #fff;
+      cursor: pointer;
+      font-family: inherit;
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      transition: all .15s;
+      text-align: center;
+      line-height: 1.25
+    }
+
+    .likert-btn:hover {
+      border-color: #c7d2fe;
+      background: #f8f9ff;
+      transform: translateY(-1px)
+    }
+
+    .likert-btn.selected {
+      color: #fff;
+      border-color: transparent;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, .15);
+      transform: scale(1.03)
+    }
+
+    .likert-btn.selected[data-val="1"] {
+      background: #ef4444
+    }
+
+    .likert-btn.selected[data-val="2"] {
+      background: #f97316
+    }
+
+    .likert-btn.selected[data-val="3"] {
+      background: #eab308
+    }
+
+    .likert-btn.selected[data-val="4"] {
+      background: #22c55e
+    }
+
+    .likert-btn.selected[data-val="5"] {
+      background: #16a34a
+    }
+
+    .toggle-group {
+      padding: 16px 24px;
+      border-bottom: 1px solid #f1f5f9
+    }
+
+    .toggle-label {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: 10px
+    }
+
+    .toggle-row {
+      display: flex;
+      gap: 6px
+    }
+
+    .toggle-btn {
+      padding: 9px 22px;
+      border-radius: 8px;
+      border: 1.5px solid var(--border);
+      background: #fff;
+      cursor: pointer;
+      font-family: inherit;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text-secondary);
+      transition: all .2s
+    }
+
+    .toggle-btn:hover {
+      border-color: #c7d2fe
+    }
+
+    .toggle-btn.active-yes {
+      background: #16a34a;
+      color: #fff;
+      border-color: #16a34a
+    }
+
+    .toggle-btn.active-no {
+      background: #64748b;
+      color: #fff;
+      border-color: #64748b
+    }
+
+    .checkbox-group {
+      padding: 16px 24px;
+      border-bottom: 1px solid #f1f5f9
+    }
+
+    .checkbox-label {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      cursor: pointer
+    }
+
+    .checkbox-label input[type="checkbox"] {
+      width: 18px;
+      height: 18px;
+      accent-color: var(--accent);
+      cursor: pointer
+    }
+
+    .number-input {
+      padding: 16px 24px;
+      border-bottom: 1px solid #f1f5f9;
+      display: flex;
+      align-items: center;
+      gap: 12px
+    }
+
+    .number-input label {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text);
+      flex: 1
+    }
+
+    .number-input input {
+      width: 80px;
+      padding: 8px 12px;
+      border: 1.5px solid var(--border);
+      border-radius: 8px;
+      font-family: inherit;
+      font-size: 14px;
+      font-weight: 600;
+      text-align: center;
+      color: var(--text)
+    }
+
+    .number-input input:focus {
+      outline: none;
+      border-color: var(--accent)
+    }
+
+    .number-input .unit {
+      font-size: 12px;
+      color: var(--text-muted)
+    }
+
+    .section-separator {
+      padding: 12px 24px 4px;
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: .1em;
+      border-top: 2px solid #f1f5f9;
+      margin-top: 4px
+    }
+
+    .conditional-block.hidden {
+      display: none
+    }
+
+    .heatmap-section {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 0 16px 24px
+    }
+
+    .heatmap-card {
+      background: var(--surface);
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      padding: 24px;
+      box-shadow: var(--shadow-sm)
+    }
+
+    .heatmap-title {
+      font-size: 16px;
+      font-weight: 700;
+      margin-bottom: 16px;
+      color: var(--text)
+    }
+
+    .heatmap-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+      gap: 10px
+    }
+
+    .heatmap-cell {
+      border-radius: 10px;
+      padding: 14px;
+      text-align: center;
+      border: 1.5px solid transparent
+    }
+
+    .heatmap-cell-id {
+      font-size: 11px;
+      font-weight: 800;
+      margin-bottom: 2px;
+      opacity: .8
+    }
+
+    .heatmap-cell-title {
+      font-size: 12px;
+      font-weight: 600;
+      margin-bottom: 6px
+    }
+
+    .heatmap-cell-score {
+      font-size: 24px;
+      font-weight: 800;
+      line-height: 1
+    }
+
+    .heatmap-cell-items {
+      font-size: 9px;
+      margin-top: 4px;
+      opacity: .7
+    }
+
+    .legend {
+      display: flex;
+      gap: 6px;
+      justify-content: center;
+      margin-top: 16px;
+      flex-wrap: wrap
+    }
+
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 10px;
+      color: var(--text-secondary)
+    }
+
+    .legend-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 3px
+    }
+
+    .export-bar {
+      max-width: 900px;
+      margin: 0 auto 40px;
+      padding: 0 16px;
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap
+    }
+
+    .export-btn {
+      padding: 10px 22px;
+      border-radius: 8px;
+      border: none;
+      cursor: pointer;
+      font-family: inherit;
+      font-size: 13px;
+      font-weight: 700;
+      transition: all .2s;
+      display: flex;
+      align-items: center;
+      gap: 8px
+    }
+
+    .export-btn:hover {
+      transform: translateY(-1px);
+      box-shadow: var(--shadow-md)
+    }
+
+    .export-btn.primary {
+      background: var(--accent);
+      color: #fff
+    }
+
+    .export-btn.secondary {
+      background: #f1f5f9;
+      color: var(--text-secondary);
+      border: 1.5px solid var(--border)
+    }
+
+    .export-btn.danger {
+      background: #fef2f2;
+      color: #dc2626;
+      border: 1.5px solid #fecaca
+    }
+
+    .export-btn.import {
+      background: #fffbeb;
+      color: #92400e;
+      border: 1.5px solid #fde68a
+    }
+
+    .import-drop-zone {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 0 16px
+    }
+
+    .drop-area {
+      border: 2px dashed #cbd5e1;
+      border-radius: var(--radius);
+      padding: 20px;
+      text-align: center;
+      transition: all .25s;
+      cursor: pointer;
+      background: #fafbfc;
+      margin-bottom: 16px;
+      display: none
+    }
+
+    .drop-area.visible {
+      display: block
+    }
+
+    .drop-area.dragover {
+      border-color: var(--accent);
+      background: var(--accent-light);
+      transform: scale(1.01)
+    }
+
+    .drop-area-icon {
+      font-size: 28px;
+      margin-bottom: 6px
+    }
+
+    .drop-area-text {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-secondary)
+    }
+
+    .drop-area-hint {
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-top: 2px
+    }
+
+    .import-toast {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      padding: 14px 22px;
+      border-radius: 10px;
+      font-family: inherit;
+      font-size: 13px;
+      font-weight: 600;
+      color: #fff;
+      z-index: 1000;
+      box-shadow: 0 8px 30px rgba(0, 0, 0, .2);
+      animation: toastIn .3s ease, toastOut .3s ease 2.7s forwards;
+      display: flex;
+      align-items: center;
+      gap: 8px
+    }
+
+    .import-toast.success {
+      background: #16a34a
+    }
+
+    .import-toast.error {
+      background: #dc2626
+    }
+
+    @keyframes toastIn {
+      from {
+        opacity: 0;
+        transform: translateY(20px)
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0)
+      }
+    }
+
+    @keyframes toastOut {
+      from {
+        opacity: 1
+      }
+
+      to {
+        opacity: 0;
+        transform: translateY(10px)
+      }
+    }
+
+    @media(max-width:640px) {
+      .header h1 {
+        font-size: 22px
+      }
+
+      .meta-card {
+        grid-template-columns: 1fr
+      }
+
+      .likert-row {
+        flex-direction: column
+      }
+
+      .likert-btn {
+        min-width: 100%
+      }
+
+      .heatmap-grid {
+        grid-template-columns: repeat(2, 1fr)
+      }
+
+      .nav-tabs {
+        gap: 3px
+      }
+
+      .nav-tab {
+        padding: 5px 10px;
+        font-size: 10px
+      }
+    }
+
+    @media print {
+      .header {
+        padding: 16px;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact
+      }
+
+      .nav-tabs,
+      .export-bar,
+      .import-drop-zone {
+        display: none
+      }
+
+      .section-card {
+        break-inside: avoid;
+        margin-bottom: 12px;
+        box-shadow: none
+      }
+
+      .heatmap-cell {
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="header">
+    <div class="header-inner">
+      <div class="header-tag">AI Adoption Readiness Canvas · Assessment Tool</div>
+      <h1>AI Readiness Assessment</h1>
+      <p>Bewerten Sie die KI-Bereitschaft Ihrer Organisation systematisch über 10 Cluster. Basierend auf einer SLR mit
+        55 Studien und 519 Items · TOE-Framework · CVI-validiert (0.89)</p>
+    </div>
+  </div>
+  <div class="meta-section">
+    <div class="meta-card">
+      <div class="meta-field"><label>Organisation</label><input type="text" id="meta-org" placeholder="Firmenname">
+      </div>
+      <div class="meta-field"><label>Bewerter / Rolle</label><input type="text" id="meta-assessor"
+          placeholder="z.B. CTO, CDO"></div>
+      <div class="meta-field"><label>Branche</label><select id="meta-industry">
+          <option value="">– Bitte wählen –</option>
+          <option>Finanzdienstleistungen</option>
+          <option>Versicherungen</option>
+          <option>Produktion / Fertigung</option>
+          <option>Handel / Retail</option>
+          <option>IT / Software</option>
+          <option>Beratung / Professional Services</option>
+          <option>Gesundheitswesen</option>
+          <option>Öffentliche Verwaltung</option>
+          <option>Logistik / Transport</option>
+          <option>Energie / Utilities</option>
+          <option>Telekommunikation</option>
+          <option>Bildung / Forschung</option>
+          <option>Andere</option>
+        </select></div>
+      <div class="meta-field"><label>Unternehmensgrösse</label><select id="meta-size">
+          <option value="">– Bitte wählen –</option>
+          <option>1–49 Mitarbeitende</option>
+          <option>50–249 Mitarbeitende</option>
+          <option>250–999 Mitarbeitende</option>
+          <option>1'000–4'999 Mitarbeitende</option>
+          <option>5'000+ Mitarbeitende</option>
+        </select></div>
+      <div class="meta-field"><label>Datum</label><input type="date" id="meta-date"></div>
+    </div>
+  </div>
+  <div class="progress-bar-wrap">
+    <div class="progress-container">
+      <div class="progress-header"><span class="progress-label">Fortschritt</span><span class="progress-pct"
+          id="progress-pct">0%</span></div>
+      <div class="progress-track">
+        <div class="progress-fill" id="progress-fill" style="width:0%"></div>
+      </div>
+    </div>
+  </div>
+  <nav class="nav-tabs" id="nav-tabs"></nav>
+  <div class="section-wrap" id="section-content"></div>
+  <div class="heatmap-section">
+    <div class="heatmap-card">
+      <div class="heatmap-title">📊 AI Readiness Heatmap</div>
+      <div class="heatmap-grid" id="heatmap-grid"></div>
+      <div class="legend" id="heatmap-legend"></div>
+    </div>
+  </div>
+  <div class="import-drop-zone">
+    <div class="drop-area" id="drop-area">
+      <div class="drop-area-icon">📂</div>
+      <div class="drop-area-text">CSV- oder JSON-Datei hierher ziehen</div>
+      <div class="drop-area-hint">oder klicken zum Auswählen</div>
+    </div>
+  </div>
+  <input type="file" id="file-input" accept=".csv,.json" style="display:none">
+  <div class="export-bar">
+    <button class="export-btn primary" onclick="exportCSV()">📥 CSV Export</button>
+    <button class="export-btn secondary" onclick="exportJSON()">💾 JSON Export</button>
+    <button class="export-btn import" onclick="toggleImportUI()">📂 Import (CSV/JSON)</button>
+    <button class="export-btn secondary" onclick="window.print()">🖨️ Drucken / PDF</button>
+    <button class="export-btn danger" onclick="resetAll()">🗑 Zurücksetzen</button>
+  </div>
+  <script>
+
+    const LL = { 1: "Stimme überhaupt nicht zu", 2: "Stimme eher nicht zu", 3: "Teils / teils", 4: "Stimme eher zu", 5: "Stimme voll und ganz zu" };
+
+    const SECTIONS = [
+      {
+        id: "G", title: "AI Reifegrad", subtitle: "Standortbestimmung & Selbsteinschätzung", color: "#475569", gradient: "linear-gradient(135deg,#475569,#64748b)", why: "Ohne ehrliche Standortbestimmung fehlt die Baseline – jede Massnahme wird zum Blindflug.", items: [
+          {
+            type: "checkbox", id: "G_stage", label: "Wie nutzt Ihre Organisation aktuell KI?", options: [
+              { id: "G_stage_none", text: "Wir nutzen aktuell keine KI (weder Pilot noch produktiv)." },
+              { id: "G_stage_pilot", text: "Wir testen KI in einzelnen Pilotprojekten / Proof of Concepts." },
+              { id: "G_stage_single", text: "Wir nutzen KI produktiv in einzelnen Bereichen." },
+              { id: "G_stage_broad", text: "Wir nutzen KI produktiv in mehreren Bereichen / breit im Unternehmen." }]
+          },
+          { type: "number", id: "G_months", label: "In unserer Organisation wird KI bereits seit … Monaten eingesetzt.", unit: "Monate" },
+          { type: "likert", id: "G01", text: "Unsere Organisation hat für den Einsatz von KI einen fortgeschrittenen Reifegrad." },
+          { type: "likert", id: "G02", text: "Unsere Organisation fördert Innovation und Experimentierfreude." },
+          { type: "likert", id: "G03", text: "Unsere Kerngeschäftsprozesse sind weitgehend digitalisiert (auch ohne KI)." },
+          { type: "likert", id: "G04", text: "Unsere Kerngeschäftsprozesse sind weitgehend automatisiert (auch ohne KI)." },
+          { type: "likert", id: "G05", text: "Wir planen, unsere KI-Nutzung in den nächsten 12 Monaten auszubauen." }]
+      },
+      {
+        id: "T1", title: "Enablers", subtitle: "Infrastructure · Data · Integration", color: "#0891b2", gradient: "linear-gradient(135deg,#0891b2,#06b6d4)", why: "Ohne technologisches Fundament scheitern selbst die besten KI-Use-Cases an der Realität.", items: [
+          { type: "likert", id: "T1_01", text: "Unsere IT-Architektur ermöglicht die Integration von KI-Anwendungen (modulare Infrastruktur, Schnittstellen vorhanden)." },
+          { type: "likert", id: "T1_02", text: "Unsere IT-Infrastruktur ermöglicht den produktiven Betrieb von KI-Anwendungen." },
+          { type: "likert", id: "T1_03", text: "Für KI-Anwendungen relevante Daten (z.B. Prozess-, Kunden-, Betriebsdaten) existieren in unserer Organisation." }]
+      },
+      {
+        id: "T2", title: "Usability", subtitle: "Ease of Use · Explainability · Intelligence", color: "#0d9488", gradient: "linear-gradient(135deg,#0d9488,#14b8a6)", why: "KI, die niemand versteht oder nutzen kann, erzeugt keinen Wert – nur Frustration.", items: [
+          { type: "likert", id: "T2_01", text: "Endanwendende können KI-Funktionen ohne zusätzliche Unterstützung effektiv nutzen." },
+          { type: "likert", id: "T2_02", text: "Endanwendende können nachvollziehen, warum ein KI-System zu einer bestimmten Entscheidung kommt." },
+          { type: "likert", id: "T2_03", text: "KI-Ergebnisse sind in den relevanten Einsatzgebieten für Endanwendende hilfreich." }]
+      },
+      {
+        id: "T3", title: "Trust", subtitle: "Security · Risk · Control (HITL)", color: "#6366f1", gradient: "linear-gradient(135deg,#6366f1,#818cf8)", why: "Ohne Vertrauen und Kontrollmechanismen wird KI zum Risiko statt zur Chance.", items: [
+          { type: "likert", id: "T3_01", text: "Es bestehen keine Bedenken hinsichtlich der Zuverlässigkeit von KI-Systemen." },
+          { type: "likert", id: "T3_02", text: "Wir haben technische und organisatorische Massnahmen etabliert, um Daten bei KI-Nutzung zu schützen." },
+          { type: "likert", id: "T3_03", text: "In Arbeitsprozessen können KI-Vorschläge übersteuert (z.B. abgelehnt) werden." }]
+      },
+      {
+        id: "O1", title: "Leadership", subtitle: "Commitment · Strategy · Champions", color: "#dc2626", gradient: "linear-gradient(135deg,#dc2626,#ef4444)", why: "Leadership ist der stärkste Prädiktor für AI-Adoption (β̄=0.35) – ohne C-Level stirbt jedes KI-Projekt.", items: [
+          { type: "likert", id: "O1_01", text: "Die Geschäftsführung unterstützt KI-Initiativen durch Priorisierung, Ressourcen oder Kommunikation." },
+          { type: "likert", id: "O1_02", text: "Unsere KI-Strategie ist organisationsweit bekannt." },
+          { type: "likert", id: "O1_03", text: "Es gibt benannte KI-Verantwortliche / Champions in unserer Organisation." }]
+      },
+      {
+        id: "O2", title: "Resources", subtitle: "Financial · Operational · Teams", color: "#ea580c", gradient: "linear-gradient(135deg,#ea580c,#f97316)", why: "KI braucht dedizierte Ressourcen – 'nebenbei' funktioniert nicht bei organisationalem Wandel.", items: [
+          { type: "likert", id: "O2_01", text: "KI-Initiativen werden gegenüber anderen Projekten aktiv priorisiert." },
+          { type: "likert", id: "O2_02", text: "Für KI-Initiativen ist Zeit verbindlich eingeplant (nicht nur ‚nebenbei')." },
+          { type: "likert", id: "O2_03", text: "Wir verfügen über interne Rollen/Teams, die KI-Lösungen entwickeln können." }]
+      },
+      {
+        id: "O3", title: "People", subtitle: "Skills · Culture · Acceptance", color: "#e11d48", gradient: "linear-gradient(135deg,#e11d48,#f43f5e)", why: "Menschen entscheiden über Adoption oder Widerstand – Skills und Kultur sind der Schlüssel.", items: [
+          { type: "likert", id: "O3_01", text: "Unsere Mitarbeitenden werden bei KI-Projekten frühzeitig einbezogen (z.B. Anforderungen, Tests)." },
+          { type: "likert", id: "O3_02", text: "Unsere Mitarbeitenden stehen der Unterstützung durch KI-Tools in ihrem Arbeitsalltag offen gegenüber." },
+          { type: "likert", id: "O3_03", text: "Unsere Mitarbeitenden verfügen über ausreichendes Wissen, um KI-Tools in ihrem Arbeitsalltag sinnvoll einzusetzen." }]
+      },
+      {
+        id: "O4", title: "Process", subtitle: "Collaboration · Agility · Governance", color: "#be123c", gradient: "linear-gradient(135deg,#be123c,#e11d48)", why: "Ohne Governance-Prozesse bleibt KI im Pilot stecken – Skalierung braucht Struktur.", items: [
+          { type: "likert", id: "O4_01", text: "Es gibt in unserer Organisation definierte Prozesse, um KI-Projekte von Pilotierung in die produktive Nutzung zu überführen." },
+          { type: "likert", id: "O4_02", text: "Es gibt bei uns definierte Prozesse, um KI-Risiken zu managen." },
+          { type: "likert", id: "O4_03", text: "In unserer Organisation arbeiten Fachbereiche und IT in KI-Initiativen zusammen." }]
+      },
+      {
+        id: "E1", title: "Market", subtitle: "Competition · Demand · Peer Adoption", color: "#7c3aed", gradient: "linear-gradient(135deg,#7c3aed,#8b5cf6)", why: "Wettbewerbsdruck und Kundenerwartungen definieren die Dringlichkeit der KI-Adoption.", items: [
+          { type: "likert", id: "E1_01", text: "In unserer Branche besteht nennenswerter Wettbewerbsdruck, KI-Technologien einzusetzen." },
+          { type: "likert", id: "E1_02", text: "Unsere Kunden erwarten zunehmend KI-gestützte Services oder Produkte." },
+          { type: "likert", id: "E1_03", text: "Viele Unternehmen in unserer Branche setzen bereits KI ein." }]
+      },
+      {
+        id: "E2", title: "Regulatory", subtitle: "Support · Compliance · AI Act", color: "#9333ea", gradient: "linear-gradient(135deg,#9333ea,#a855f7)", why: "Regulierung kann Bremse oder Beschleuniger sein – wer sie versteht, hat Vorsprung.", items: [
+          { type: "likert", id: "E2_01", text: "Der regulatorische Aufwand für KI-Projekte ist in unserer Branche höher als bei klassischen IT-Projekten." },
+          { type: "likert", id: "E2_02", text: "In unserer Branche gibt es Förderprogramme für KI-Projekte." },
+          { type: "likert", id: "E2_03", text: "In unserer Branche bestehen Compliance-Anforderungen für den Einsatz von KI-Systemen." }]
+      },
+      {
+        id: "E3", title: "Partner", subtitle: "Vendors · Ecosystem · Forschung", color: "#a855f7", gradient: "linear-gradient(135deg,#a855f7,#c084fc)", why: "KI-Adoption ist kein Solo-Projekt – das richtige Ökosystem beschleunigt massiv.", items: [
+          { type: "likert", id: "E3_01", text: "Wir haben ein Netzwerk von externen Umsetzungspartnern für KI-Projekte." },
+          { type: "likert", id: "E3_02", text: "Wir haben Zugang zu externen Technologieanbietern (z.B. Cloud) für KI-Projekte." },
+          { type: "likert", id: "E3_03", text: "Wir arbeiten mit Forschungseinrichtungen (z.B. Hochschulen) im Bereich KI zusammen." }]
+      },
+      {
+        id: "A", title: "Adoption Success", subtitle: "KPI Impact · Skalierung · Lessons Learned", color: "#16a34a", gradient: "linear-gradient(135deg,#16a34a,#22c55e)", why: "Nur was gemessen wird, wird gemanaged – Adoption Success schliesst den Kreislauf.", items: [
+          { type: "toggle", id: "A_has_initiatives", label: "Haben Sie bereits KI-Initiativen durchgeführt?" },
+          { type: "separator", label: "Erfahrungen aus KI-Initiativen", conditional: "A_yes" },
+          { type: "likert", id: "A_01", text: "Wir haben durch KI-Initiativen messbaren wirtschaftlichen Nutzen erzielt.", conditional: "A_yes", scored: true },
+          { type: "likert", id: "A_02", text: "Wir haben durch KI-Initiativen Durchlaufzeiten reduziert.", conditional: "A_yes", scored: true },
+          { type: "likert", id: "A_03", text: "Wir haben durch KI-Initiativen die Prozessqualität verbessert.", conditional: "A_yes", scored: true },
+          { type: "likert", id: "A_04", text: "Wir haben durch KI-Initiativen die Kundenzufriedenheit erhöht.", conditional: "A_yes", scored: true },
+          { type: "likert", id: "A_05", text: "Wir haben durch KI-Initiativen die Mitarbeiterzufriedenheit erhöht.", conditional: "A_yes", scored: true },
+          { type: "likert", id: "A_06", text: "Die Ergebnisse unserer KI-Initiativen gehen in Produktion.", conditional: "A_yes", scored: true },
+          { type: "separator", label: "Scheiternsfaktoren", conditional: "A_yes" },
+          { type: "likert", id: "A_f01", text: "Daten-Aspekte waren ein Grund für das Scheitern von KI-Projekten.", conditional: "A_yes" },
+          { type: "likert", id: "A_f02", text: "Prozess-Aspekte waren ein Grund für das Scheitern.", conditional: "A_yes" },
+          { type: "likert", id: "A_f03", text: "Technische Aspekte (z.B. Integration) waren ein Grund für das Scheitern.", conditional: "A_yes" },
+          { type: "likert", id: "A_f04", text: "Compliance war ein Grund für das Scheitern.", conditional: "A_yes" },
+          { type: "likert", id: "A_f05", text: "Interne Expertise war ein Grund für das Scheitern.", conditional: "A_yes" },
+          { type: "likert", id: "A_f06", text: "Mitarbeiter-Akzeptanz war ein Grund für das Scheitern.", conditional: "A_yes" },
+          { type: "likert", id: "A_f07", text: "Kunden-Akzeptanz war ein Grund für das Scheitern.", conditional: "A_yes" },
+          { type: "likert", id: "A_f08", text: "C-Level Commitment war ein Grund für das Scheitern.", conditional: "A_yes" },
+          { type: "likert", id: "A_f09", text: "Der Business Case war ein Grund für das Scheitern.", conditional: "A_yes" },
+          { type: "separator", label: "Erfolgsfaktoren", conditional: "A_yes" },
+          { type: "likert", id: "A_s01", text: "Daten-Aspekte waren ein Grund für den Erfolg von KI-Projekten.", conditional: "A_yes" },
+          { type: "likert", id: "A_s02", text: "Prozess-Aspekte waren ein Grund für den Erfolg.", conditional: "A_yes" },
+          { type: "likert", id: "A_s03", text: "Technische Aspekte (z.B. Integration) waren ein Grund für den Erfolg.", conditional: "A_yes" },
+          { type: "likert", id: "A_s04", text: "Compliance war ein Grund für den Erfolg.", conditional: "A_yes" },
+          { type: "likert", id: "A_s05", text: "Interne Expertise war ein Grund für den Erfolg.", conditional: "A_yes" },
+          { type: "likert", id: "A_s06", text: "Mitarbeiter-Akzeptanz war ein Grund für den Erfolg.", conditional: "A_yes" },
+          { type: "likert", id: "A_s07", text: "Kunden-Akzeptanz war ein Grund für den Erfolg.", conditional: "A_yes" },
+          { type: "likert", id: "A_s08", text: "C-Level Commitment war ein Grund für den Erfolg.", conditional: "A_yes" },
+          { type: "likert", id: "A_s09", text: "Der Business Case war ein Grund für den Erfolg.", conditional: "A_yes" },
+          { type: "separator", label: "Erwartungen an KI-Initiativen", conditional: "A_no" },
+          { type: "likert", id: "A_e01", text: "Wir erwarten, dass durch KI-Initiativen für uns wirtschaftlicher Nutzen erzielt wird.", conditional: "A_no", scored: true },
+          { type: "likert", id: "A_e02", text: "Wir erwarten, dass durch KI-Initiativen für uns Durchlaufzeiten reduziert werden.", conditional: "A_no", scored: true },
+          { type: "likert", id: "A_e03", text: "Wir erwarten, dass durch KI-Initiativen für uns die Prozessqualität verbessert wird.", conditional: "A_no", scored: true },
+          { type: "likert", id: "A_e04", text: "Wir erwarten, dass durch KI-Initiativen für uns die Kundenzufriedenheit erhöht wird.", conditional: "A_no", scored: true },
+          { type: "likert", id: "A_e05", text: "Wir erwarten, dass durch KI-Initiativen für uns die Mitarbeiterzufriedenheit erhöht wird.", conditional: "A_no", scored: true },
+          { type: "separator", label: "Gründe, warum KI noch nicht eingesetzt wird", conditional: "A_no" },
+          { type: "likert", id: "A_b01", text: "Daten-Aspekte sind ein Grund, warum KI noch nicht eingesetzt wird.", conditional: "A_no" },
+          { type: "likert", id: "A_b02", text: "Prozess-Aspekte sind ein Grund, warum KI noch nicht eingesetzt wird.", conditional: "A_no" },
+          { type: "likert", id: "A_b03", text: "Technische Aspekte (z.B. Integration) sind ein Grund, warum KI noch nicht eingesetzt wird.", conditional: "A_no" },
+          { type: "likert", id: "A_b04", text: "Compliance ist ein Grund, warum KI noch nicht eingesetzt wird.", conditional: "A_no" },
+          { type: "likert", id: "A_b05", text: "Interne Expertise ist ein Grund, warum KI noch nicht eingesetzt wird.", conditional: "A_no" },
+          { type: "likert", id: "A_b06", text: "Mitarbeiter-Akzeptanz ist ein Grund, warum KI noch nicht eingesetzt wird.", conditional: "A_no" },
+          { type: "likert", id: "A_b07", text: "Kunden-Akzeptanz ist ein Grund, warum KI noch nicht eingesetzt wird.", conditional: "A_no" },
+          { type: "likert", id: "A_b08", text: "C-Level Commitment ist ein Grund, warum KI noch nicht eingesetzt wird.", conditional: "A_no" },
+          { type: "likert", id: "A_b09", text: "Der Business Case ist ein Grund, warum KI noch nicht eingesetzt wird.", conditional: "A_no" }]
+      }
+    ];
+
+    let state = {}, activeSection = "G";
+    function loadState() { try { const s = localStorage.getItem('ai_readiness_state'); if (s) state = JSON.parse(s) } catch (e) { } }
+    function saveState() { try { localStorage.setItem('ai_readiness_state', JSON.stringify(state)) } catch (e) { } }
+    function itemVisible(item) { if (!item.conditional) return true; if (item.conditional === "A_yes") return state.A_has_initiatives === "yes"; if (item.conditional === "A_no") return state.A_has_initiatives === "no"; return !!state[item.conditional] }
+
+    function renderNav() {
+      const nav = document.getElementById('nav-tabs');
+      nav.innerHTML = SECTIONS.map(s => {
+        const sc = getSectionScore(s.id), sl = sc !== null ? sc.toFixed(1) : '–';
+        return `<button class="nav-tab ${activeSection === s.id ? 'active' : ''}" onclick="switchSection('${s.id}')" style="${activeSection === s.id ? `border-color:${s.color};background:${s.color}10;color:${s.color}` : ''}"><span class="tab-badge" style="background:${s.color};color:#fff">${s.id}</span>${s.title}<span class="tab-score" style="${activeSection === s.id ? `background:${s.color}` : ''}">${sl}</span></button>`
+      }).join('')
+    }
+
+    function renderSection(section) {
+      const s = section; let h = `<div class="section-card"><div class="section-header" style="border-top:3px solid ${s.color}"><div><span class="section-id" style="background:${s.gradient}">${s.id}</span><span class="section-title">${s.title}</span></div><div class="section-subtitle">${s.subtitle}</div></div>`;
+      s.items.forEach(item => {
+        if (item.type === 'separator') { const v = itemVisible(item); h += `<div class="section-separator conditional-block ${v ? '' : 'hidden'}" data-cond="${item.conditional || ''}">${item.label}</div>`; return }
+        if (item.type === 'toggle') h += renderToggle(item, s);
+        else if (item.type === 'checkbox') h += renderCheckboxGroup(item, s);
+        else if (item.type === 'number') h += renderNumberInput(item, s);
+        else if (item.type === 'likert') h += renderLikertItem(item, s, itemVisible(item))
+      });
+      h += `</div>`; document.getElementById('section-content').innerHTML = h
+    }
+
+    function renderToggle(item, sec) {
+      const v = state[item.id] || '';
+      return `<div class="toggle-group"><div class="toggle-label"><span class="question-id" style="background:${sec.color}">${item.id}</span> ${item.label}</div><div class="toggle-row"><button class="toggle-btn ${v === 'yes' ? 'active-yes' : ''}" onclick="setToggle('${item.id}','yes','${sec.id}')">✓ Ja</button><button class="toggle-btn ${v === 'no' ? 'active-no' : ''}" onclick="setToggle('${item.id}','no','${sec.id}')">✗ Nein</button></div></div>`
+    }
+
+    function renderCheckboxGroup(item, sec) {
+      let h = `<div class="checkbox-group"><div style="font-size:13px;font-weight:600;color:var(--text);margin-bottom:10px"><span class="question-id" style="background:${sec.color}">${item.id}</span> ${item.label}</div>`;
+      item.options.forEach(o => { h += `<label class="checkbox-label" style="margin-bottom:6px"><input type="checkbox" ${state[o.id] ? 'checked' : ''} onchange="toggleCheckbox('${o.id}',this.checked)"> ${o.text}</label>` });
+      return h + `</div>`
+    }
+
+    function renderNumberInput(item, sec) {
+      return `<div class="number-input"><label><span class="question-id" style="background:${sec.color}">${item.id}</span> ${item.label}</label><input type="number" min="0" max="240" value="${state[item.id] || ''}" onchange="setNumber('${item.id}',this.value)"><span class="unit">${item.unit}</span></div>`
+    }
+
+    function renderLikertItem(item, sec, vis) {
+      const v = state[item.id] || 0;
+      let h = `<div class="question-group conditional-block ${vis ? '' : 'hidden'}" id="q_${item.id}" data-cond="${item.conditional || ''}"><div class="question-text"><span class="question-id" style="background:${sec.color}">${item.id}</span> ${item.text}</div><div class="likert-row" id="lr_${item.id}">`;
+      for (let i = 1; i <= 5; i++)h += `<button class="likert-btn ${v === i ? 'selected' : ''}" data-val="${i}" onclick="setLikert('${item.id}',${i})">${LL[i]}</button>`;
+      return h + `</div></div>`
+    }
+
+    function switchSection(id) { activeSection = id; renderNav(); renderSection(SECTIONS.find(s => s.id === id)) }
+
+    function setLikert(id, val) {
+      state[id] = val; saveState();
+      const row = document.getElementById('lr_' + id);
+      if (row) row.querySelectorAll('.likert-btn').forEach(b => { b.classList.toggle('selected', parseInt(b.getAttribute('data-val')) === val) });
+      updateSideEffects()
+    }
+
+    function setToggle(id, val, secId) {
+      state[id] = val; saveState();
+      document.querySelectorAll('.conditional-block').forEach(el => {
+        const c = el.getAttribute('data-cond'); if (!c) return;
+        if (c === 'A_yes') el.classList.toggle('hidden', val !== 'yes');
+        else if (c === 'A_no') el.classList.toggle('hidden', val !== 'no')
+      });
+      const btns = document.querySelectorAll('.toggle-btn');
+      btns.forEach(b => {
+        if (b.textContent.includes('Ja')) { b.classList.toggle('active-yes', val === 'yes'); b.classList.remove('active-no') }
+        if (b.textContent.includes('Nein')) { b.classList.toggle('active-no', val === 'no'); b.classList.remove('active-yes') }
+      });
+      updateSideEffects()
+    }
+
+    function toggleCheckbox(id, checked) { state[id] = checked; saveState(); updateSideEffects() }
+    function setNumber(id, val) { state[id] = val; saveState() }
+    function updateSideEffects() { updateProgress(); updateHeatmap(); renderNav() }
+
+    function getSectionScore(sectionId) {
+      const sec = SECTIONS.find(s => s.id === sectionId), lk = sec.items.filter(i => i.type === 'likert');
+      let tot = 0, cnt = 0;
+      if (sectionId === 'A') { lk.forEach(i => { if (!i.scored || !itemVisible(i)) return; if (state[i.id]) { tot += state[i.id]; cnt++ } }) }
+      else { lk.forEach(i => { if (!itemVisible(i)) return; if (state[i.id]) { tot += state[i.id]; cnt++ } }) }
+      return cnt > 0 ? tot / cnt : null
+    }
+
+    function getSectionAnswered(sectionId) {
+      const sec = SECTIONS.find(s => s.id === sectionId), lk = sec.items.filter(i => i.type === 'likert');
+      let a = 0, t = 0; lk.forEach(i => { if (!itemVisible(i)) return; t++; if (state[i.id]) a++ }); return { answered: a, total: t }
+    }
+
+    function updateProgress() {
+      let ta = 0, tq = 0; SECTIONS.forEach(s => { const { answered, total } = getSectionAnswered(s.id); ta += answered; tq += total });
+      const p = tq > 0 ? Math.round(ta / tq * 100) : 0;
+      document.getElementById('progress-pct').textContent = p + '%';
+      document.getElementById('progress-fill').style.width = p + '%'
+    }
+
+    function scoreToColor(s) {
+      if (s === null) return { bg: '#f8f9fb', text: '#94a3b8', border: '#e3e5ea' };
+      if (s < 2) return { bg: '#fef2f2', text: '#991b1b', border: '#fecaca' };
+      if (s < 3) return { bg: '#fff7ed', text: '#9a3412', border: '#fed7aa' };
+      if (s < 3.5) return { bg: '#fefce8', text: '#854d0e', border: '#fef08a' };
+      if (s < 4.2) return { bg: '#f0fdf4', text: '#166534', border: '#bbf7d0' };
+      return { bg: '#ecfdf5', text: '#065f46', border: '#6ee7b7' }
+    }
+
+    function updateHeatmap() {
+      document.getElementById('heatmap-grid').innerHTML = SECTIONS.map(s => {
+        const sc = getSectionScore(s.id), { answered, total } = getSectionAnswered(s.id), c = scoreToColor(sc);
+        return `<div class="heatmap-cell" style="background:${c.bg};border-color:${c.border};color:${c.text}"><div class="heatmap-cell-id">${s.id}</div><div class="heatmap-cell-title">${s.title}</div><div class="heatmap-cell-score">${sc !== null ? sc.toFixed(1) : '–'}</div><div class="heatmap-cell-items">${answered}/${total} beantwortet</div></div>`
+      }).join('');
+      document.getElementById('heatmap-legend').innerHTML = [{ l: '< 2.0 Kritisch', c: '#fecaca' }, { l: '2.0–3.0 Schwach', c: '#fed7aa' }, { l: '3.0–3.5 Mittel', c: '#fef08a' }, { l: '3.5–4.2 Gut', c: '#bbf7d0' }, { l: '> 4.2 Exzellent', c: '#6ee7b7' }].map(x => `<div class="legend-item"><div class="legend-dot" style="background:${x.c}"></div>${x.l}</div>`).join('')
+    }
+
+    function q(s) { return '"' + (s || '').replace(/"/g, '""') + '"' }
+    function today() { return new Date().toISOString().slice(0, 10) }
+    function dl(blob, name) { const u = URL.createObjectURL(blob), a = document.createElement('a'); a.href = u; a.download = name; a.click(); URL.revokeObjectURL(u) }
+
+    function exportCSV() {
+      const m = { o: document.getElementById('meta-org').value, b: document.getElementById('meta-assessor').value, br: document.getElementById('meta-industry').value, g: document.getElementById('meta-size').value, d: document.getElementById('meta-date').value };
+      let r = ['Section_ID;Section_Title;Item_ID;Item_Text;Type;Value;Organisation;Bewerter;Branche;Groesse;Datum'];
+      SECTIONS.forEach(s => {
+        s.items.forEach(i => {
+          if (i.type === 'separator') return;
+          if (i.type === 'toggle') r.push([s.id, q(s.title), i.id, q(i.label), 'toggle', state[i.id] || '', q(m.o), q(m.b), q(m.br), q(m.g), m.d].join(';'));
+          else if (i.type === 'checkbox') i.options.forEach(o => r.push([s.id, q(s.title), o.id, q(o.text), 'checkbox', state[o.id] ? '1' : '0', q(m.o), q(m.b), q(m.br), q(m.g), m.d].join(';')));
+          else if (i.type === 'number') r.push([s.id, q(s.title), i.id, q(i.label), 'number', state[i.id] || '', q(m.o), q(m.b), q(m.br), q(m.g), m.d].join(';'));
+          else if (i.type === 'likert') r.push([s.id, q(s.title), i.id, q(i.text), 'likert', state[i.id] || '', q(m.o), q(m.b), q(m.br), q(m.g), m.d].join(';'))
+        })
+      });
+      r.push(''); r.push('--- ZUSAMMENFASSUNG ---'); r.push('Section_ID;Section_Title;Durchschnitt;Beantwortet;Gesamt');
+      SECTIONS.forEach(s => { const sc = getSectionScore(s.id), { answered, total } = getSectionAnswered(s.id); r.push([s.id, q(s.title), sc !== null ? sc.toFixed(2) : '', answered, total].join(';')) });
+      dl(new Blob(['\uFEFF' + r.join('\n')], { type: 'text/csv;charset=utf-8;' }), `AI_Readiness_${(m.o || 'Assessment').replace(/\s/g, '_')}_${m.d || today()}.csv`)
+    }
+
+    function exportJSON() {
+      const m = { organisation: document.getElementById('meta-org').value, bewerter: document.getElementById('meta-assessor').value, branche: document.getElementById('meta-industry').value, groesse: document.getElementById('meta-size').value, datum: document.getElementById('meta-date').value };
+      const sc = {}; SECTIONS.forEach(s => { sc[s.id] = { title: s.title, score: getSectionScore(s.id), ...getSectionAnswered(s.id) } });
+      dl(new Blob([JSON.stringify({ meta: m, responses: state, scores: sc, exportedAt: new Date().toISOString(), version: '2.0' }, null, 2)], { type: 'application/json' }), `AI_Readiness_${(m.organisation || 'Assessment').replace(/\s/g, '_')}_${m.datum || today()}.json`)
+    }
+
+    function toggleImportUI() { const a = document.getElementById('drop-area'); a.classList.toggle('visible'); if (a.classList.contains('visible')) a.scrollIntoView({ behavior: 'smooth', block: 'center' }) }
+    function showToast(msg, type) { document.querySelectorAll('.import-toast').forEach(e => e.remove()); const t = document.createElement('div'); t.className = `import-toast ${type}`; t.innerHTML = `${type === 'success' ? '✅' : '❌'} ${msg}`; document.body.appendChild(t); setTimeout(() => t.remove(), 3000) }
+    function parseCsvLine(line) { const cols = []; let cur = '', inQ = false; for (let i = 0; i < line.length; i++) { const c = line[i]; if (c === '"') { inQ = !inQ; continue } if (c === ';' && !inQ) { cols.push(cur.trim()); cur = ''; continue } cur += c } cols.push(cur.trim()); return cols }
+
+    function importCSV(text) {
+      try {
+        if (text.charCodeAt(0) === 0xFEFF) text = text.slice(1);
+        const lines = text.split('\n').map(l => l.trim()).filter(l => l), hIdx = lines.findIndex(l => l.startsWith('Section_ID'));
+        if (hIdx === -1) throw new Error('CSV-Header nicht gefunden');
+        const hdr = lines[hIdx].split(';').map(h => h.replace(/"/g, '').trim());
+        const vi = hdr.indexOf('Value'), ii = hdr.indexOf('Item_ID'), ti = hdr.indexOf('Type'), oi = hdr.indexOf('Organisation'), bi = hdr.indexOf('Bewerter'), bri = hdr.indexOf('Branche'), gi = hdr.indexOf('Groesse'), di = hdr.indexOf('Datum'), ni = hdr.indexOf('NA');
+        state = {}; let mO = '', mB = '', mBr = '', mG = '', mD = '', cnt = 0;
+        for (let i = hIdx + 1; i < lines.length; i++) {
+          if (lines[i].startsWith('---') || lines[i].startsWith('Section_ID')) break;
+          const c = parseCsvLine(lines[i]); if (c.length < 5) continue;
+          const id = c[ii] || c[2], tp = c[ti] || c[4], val = c[vi] || c[5];
+          if (!mO && oi >= 0 && c[oi]) mO = c[oi]; if (!mB && bi >= 0 && c[bi]) mB = c[bi]; if (!mBr && bri >= 0 && c[bri]) mBr = c[bri]; if (!mG && gi >= 0 && c[gi]) mG = c[gi]; if (!mD && di >= 0 && c[di]) mD = c[di];
+          if (ni >= 0 && c[ni] === 'ja') { cnt++; continue }
+          if (tp === 'likert' || tp === 'number') { if (val && !isNaN(parseInt(val))) state[id] = parseInt(val); cnt++ }
+          else if (tp === 'checkbox') { if (val === '1' || val === 'true') state[id] = true; cnt++ }
+          else if (tp === 'toggle') { if (val) state[id] = val; cnt++ }
+        }
+        if (mO) document.getElementById('meta-org').value = mO; if (mB) document.getElementById('meta-assessor').value = mB;
+        if (mBr) setSel('meta-industry', mBr); if (mG) setSel('meta-size', mG); if (mD) document.getElementById('meta-date').value = mD;
+        saveState(); renderNav(); renderSection(SECTIONS.find(s => s.id === activeSection)); updateProgress(); updateHeatmap();
+        showToast(cnt + ' Items aus CSV importiert', 'success'); document.getElementById('drop-area').classList.remove('visible');
+      } catch (e) { showToast('CSV-Import fehlgeschlagen: ' + e.message, 'error'); console.error(e) }
+    }
+
+    function importJSON(text) {
+      try {
+        const d = JSON.parse(text); if (d.responses && typeof d.responses === 'object') state = d.responses; else throw new Error('Ungültiges Format');
+        if (d.meta) { if (d.meta.organisation) document.getElementById('meta-org').value = d.meta.organisation; if (d.meta.bewerter) document.getElementById('meta-assessor').value = d.meta.bewerter; if (d.meta.branche) setSel('meta-industry', d.meta.branche); if (d.meta.groesse) setSel('meta-size', d.meta.groesse); if (d.meta.datum) document.getElementById('meta-date').value = d.meta.datum }
+        saveState(); renderNav(); renderSection(SECTIONS.find(s => s.id === activeSection)); updateProgress(); updateHeatmap();
+        showToast(Object.keys(state).length + ' Items aus JSON importiert', 'success'); document.getElementById('drop-area').classList.remove('visible');
+      } catch (e) { showToast('JSON-Import fehlgeschlagen: ' + e.message, 'error'); console.error(e) }
+    }
+
+    function setSel(id, text) { const s = document.getElementById(id); for (let i = 0; i < s.options.length; i++) { if (s.options[i].value === text || s.options[i].text === text) { s.selectedIndex = i; return } } }
+    function handleFile(f) { if (!f) return; const r = new FileReader(); r.onload = e => { if (f.name.toLowerCase().endsWith('.json')) importJSON(e.target.result); else importCSV(e.target.result) }; r.readAsText(f, 'UTF-8') }
+    function resetAll() { if (!confirm('Alle Antworten zurücksetzen?')) return; state = {}; saveState();['meta-org', 'meta-assessor', 'meta-date'].forEach(id => document.getElementById(id).value = ''); document.getElementById('meta-industry').selectedIndex = 0; document.getElementById('meta-size').selectedIndex = 0; init() }
+
+    function setupDragDrop() {
+      const dr = document.getElementById('drop-area'), inp = document.getElementById('file-input');
+      dr.addEventListener('click', () => inp.click());
+      inp.addEventListener('change', e => { if (e.target.files.length) handleFile(e.target.files[0]); inp.value = '' });
+      ['dragenter', 'dragover'].forEach(ev => dr.addEventListener(ev, e => { e.preventDefault(); e.stopPropagation(); dr.classList.add('dragover') }));
+      ['dragleave', 'drop'].forEach(ev => dr.addEventListener(ev, e => { e.preventDefault(); e.stopPropagation(); dr.classList.remove('dragover') }));
+      dr.addEventListener('drop', e => { if (e.dataTransfer.files.length) handleFile(e.dataTransfer.files[0]) });
+      document.body.addEventListener('dragover', e => { e.preventDefault(); if (!dr.classList.contains('visible')) dr.classList.add('visible'); dr.classList.add('dragover') });
+      document.body.addEventListener('dragleave', e => { if (!e.relatedTarget || e.relatedTarget === document.documentElement) dr.classList.remove('dragover') });
+      document.body.addEventListener('drop', e => { e.preventDefault(); dr.classList.remove('dragover'); if (e.dataTransfer.files.length) handleFile(e.dataTransfer.files[0]) })
+    }
+
+    function init() { loadState(); document.getElementById('meta-date').value = document.getElementById('meta-date').value || today(); renderNav(); renderSection(SECTIONS.find(s => s.id === activeSection)); updateProgress(); updateHeatmap(); setupDragDrop() }
+    document.addEventListener('DOMContentLoaded', init);
+
+  </script>
+</body>
+
+</html>
